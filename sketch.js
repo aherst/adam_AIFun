@@ -157,9 +157,12 @@ function updatePacMan() {
   // Find nearest uneaten eye if no target
   if (!pacman.target) {
     let minDist = Infinity;
+    let allEyesEaten = true;  // Flag to check if all eyes are eaten
+    
     for(let i = 0; i < positions.length; i++) {
       // Check left eye
       if (!eatenEyes[i].left) {
+        allEyesEaten = false;  // Found an uneaten eye
         let d = dist(pacman.x, pacman.y, positions[i].x, positions[i].y);
         if (d < minDist) {
           minDist = d;
@@ -168,12 +171,18 @@ function updatePacMan() {
       }
       // Check right eye
       if (!eatenEyes[i].right) {
+        allEyesEaten = false;  // Found an uneaten eye
         let d = dist(pacman.x, pacman.y, positions[i].x + 90, positions[i].y);
         if (d < minDist) {
           minDist = d;
           pacman.target = { index: i, side: 'right' };
         }
       }
+    }
+    
+    // If all eyes are eaten, regenerate them
+    if (allEyesEaten) {
+      randomizeSizes();
     }
   }
   
